@@ -1,66 +1,50 @@
-//stopwatch js
+let start = 0;
+let pause = 0;
+let stoptime = true;
 
-const pauseButton = document.getElementById("pause");
 const timer = document.getElementById('timer');
+const pauseButton = document.getElementById("pause");
 
-//pauseButton.addEventListener("click", stopTimer());
+pauseButton.addEventListener("click", () => { stopTimer() });
 
-var min = 0;
-var sec = 0;
-var stoptime = true;
 
 function startTimer() {
     if (stoptime) {
         stoptime = false;
+        start = Date.now();
         timerCycle();
     }
 }
 
 function stopTimer() {
     if (!stoptime) {
-        pauseButton.innerHTML = "Resume";
+        pause = Date.now();
         stoptime = true;
+        pauseButton.innerHTML = "Resume";
     } else {
+        start += Date.now() - pause;
+        stoptime = false;
         pauseButton.innerHTML = "Pause";
-        startTimer()
     }
 }
 
 function timerCycle() {
-    if (stoptime == false) {
-    sec = parseInt(sec);
-    min = parseInt(min);
-
-    sec = sec + 1;
-
-    if (sec == 60) {
-      min = min + 1;
-      sec = 0;
-    }
-    if (min == 60) {
-      hr = hr + 1;
-      min = 0;
-      sec = 0;
-    }
-
-    if (sec < 10 || sec == 0) {
-      sec = '0' + sec;
-    }
-    if (min < 10 || min == 0) {
-      min = '0' + min;
-    }
-
-    timer.innerHTML = min + ':' + sec;
-
+    setInterval(() => {
+        if (!stoptime) {
+            let diff = Date.now() - start;
+            diff = Math.floor(diff / 1000);
+            let min = Math.floor(diff / 60, 10);
+            let sec = Math.floor(diff % 60, 10);
+            timer.innerHTML = (min.toString().length < 2 ? "0"+ min : min) +":"+ (sec.toString().length < 2 ? "0"+ sec : sec);
+        }
+    }, 100);
+    
     setTimeout(timerCycle, 1000);
-  }
 }
 
 function resetTimer() {
     timer.innerHTML = '00:00';
     stoptime = true;
-    min = 0;
-    sec = 0;
 }
 
 export default startTimer;
