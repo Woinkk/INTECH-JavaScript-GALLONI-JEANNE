@@ -38,8 +38,6 @@ function timerCycle() {
             timer.innerHTML = (min.toString().length < 2 ? "0"+ min : min) +":"+ (sec.toString().length < 2 ? "0"+ sec : sec);
         }
     }, 100);
-    
-    setTimeout(timerCycle, 1000);
 }
 
 function resetTimer() {

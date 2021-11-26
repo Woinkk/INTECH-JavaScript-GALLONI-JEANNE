@@ -22,3 +22,12 @@
     background-color: gray;
     text-align: center;
 }
+
+.td_clear {
+    display: grid;
+    border: 1px solid black;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    text-align: center;
+}

@@ -22,12 +22,12 @@ function difficultyChooser() {
             nmbOfBomb = 10;
             break;
         case "medium":
-            sizeOfGrid = 20;
-            nmbOfBomb = 40;
+            sizeOfGrid = 25;
+            nmbOfBomb = 50;
             break;
         case "hard":
-            sizeOfGrid = 40;
-            nmbOfBomb = 100;
+            sizeOfGrid = 35;
+            nmbOfBomb = 200;
             break;
         default:
             sizeOfGrid = 10;
@@ -93,14 +93,25 @@ function clickOnCell (cell) {
     else revealValues(cell);
 }
 
+function revealBombs() {
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            if (bombsPlacement[i][j] === -5) {
+                document.getElementById(i+"cell"+j).innerHTML = "B";
+                document.getElementById(i+"cell"+j).className = "td_clear";
+            }
+        }
+    }
+}
+
 function valuePlacer(x, y, grid) {
-    if (x+1 < gridSize && y+1 > gridSize && grid[x+1][y+1] !== -5) grid[x+1][y+1]++;
+    if (x+1 < gridSize && y+1 < gridSize && grid[x+1][y+1] !== -5) grid[x+1][y+1]++;
     if (x+1 < gridSize && grid[x+1][y] !== -5) grid[x+1][y]++;
     if (x+1 < gridSize && y - 1 >= 0 && grid[x+1][y-1] !== -5) grid[x+1][y-1]++;
-    if (x && y+1 < gridSize && grid[x][y+1] !== -5) grid[x][y+1]++;
-    if (x && y-1 >= 0 && grid[x][y-1] !== -5) grid[x][y-1]++;
+    if (y+1 < gridSize && grid[x][y+1] !== -5) grid[x][y+1]++;
+    if (y-1 >= 0 && grid[x][y-1] !== -5) grid[x][y-1]++;
     if (x-1 >= 0 && y+1 < gridSize && grid[x-1][y+1] !== -5) grid[x-1][y+1]++;
-    if (x-1 >= 0 && y && grid[x-1][y] !== -5) grid[x-1][y]++;
+    if (x-1 >= 0 && grid[x-1][y] !== -5) grid[x-1][y]++;
     if (x-1 >= 0 && y-1 >= 0&& grid[x-1][y-1] !== -5) grid[x-1][y-1]++;
 }
 
@@ -110,20 +121,26 @@ function revealValues(cell) {
     let list = [];
     findAdjacent(x, y, list);
     console.log(list);
+    for (let i = 0; i < list.length; i++) {
+        document.getElementById(list[i][0]+"cell"+list[i][1]).innerHTML = bombsPlacement[list[i][0]][list[i][1]];
+        document.getElementById(list[i][0]+"cell"+list[i][1]).className = "td_clear";
+    }
 }
 
 function findAdjacent(x, y, list) {
-    if (bombsPlacement[x][y] === 0) {
-        findAdjacent(x + 1, y - 1, list);
-        findAdjacent(x + 1, y, list);
-        findAdjacent(x + 1, y + 1, list);
-        findAdjacent(x, y - 1, list);
-        findAdjacent(x, y + 1, list);
-        findAdjacent(x - 1, y - 1, list);
-        findAdjacent(x - 1, y, list);
-        findAdjacent(x - 1, y + 1, list);
+    if (x >= 0 && x < gridSize && y >= 0 && y < gridSize && check([x, y], list)) {
+        list.push([x, y]);
+        if (bombsPlacement[x][y] === 0) {
+            findAdjacent(x + 1, y - 1, list);
+            findAdjacent(x + 1, y, list);
+            findAdjacent(x + 1, y + 1, list);
+            findAdjacent(x, y - 1, list);
+            findAdjacent(x, y + 1, list);
+            findAdjacent(x - 1, y - 1, list);
+            findAdjacent(x - 1, y, list);
+            findAdjacent(x - 1, y + 1, list);
+        }
     }
-    if (check([x, y], list)) list.push([x, y]);
 }
 
 function check(cell, list) {
