@@ -4,6 +4,7 @@ const difficulty = document.getElementById("difficulty");
 const game = document.getElementById("game");
 let bombsPlacement = 0;
 let grids = [];
+let flagList = [];
 let nmbBombs = 0;
 let gridSize = 0;
 
@@ -77,6 +78,10 @@ function gridWebCreator(size) {
             cell.className = "td";
             cell.id = i+"cell"+j;
             cell.addEventListener("click", () => {clickOnCell([i, j])});
+            cell.addEventListener("contextmenu", (ev) => {
+            ev.preventDefault();
+            cell.innerHTML = "F"
+            flagList.push([i, j]);
             row.append(cell);
         }
     };
