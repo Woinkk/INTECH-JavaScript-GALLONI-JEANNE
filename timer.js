@@ -50,14 +50,14 @@ function timerCycle() {
       min = '0' + min;
     }
 
-    timer.innerHTML = min + '-' + sec;
+    timer.innerHTML = min + ':' + sec;
 
     setTimeout("timerCycle()", 1000);
   }
 }
 
 function resetTimer() {
-    timer.innerHTML = '00-00';
+    timer.innerHTML = '00:00';
     stoptime = true;
     min = 0;
     sec = 0;
