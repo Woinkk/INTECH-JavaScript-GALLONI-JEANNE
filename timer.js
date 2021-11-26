@@ -3,7 +3,7 @@
 const pauseButton = document.getElementById("pause");
 const timer = document.getElementById('timer');
 
-//pauseButton.addEventListener("click", stopTimer());
+pauseButton.addEventListener("click", () => { stopTimer() });
 
 var min = 0;
 var sec = 0;
