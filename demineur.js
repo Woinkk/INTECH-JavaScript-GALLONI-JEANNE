@@ -59,7 +59,7 @@ function bombsPlacer(size, grid, bombs, first) {
     for (let i = 0; i < bombs; i++) {
         const x = Math.floor(Math.random() * size);
         const y = Math.floor(Math.random() * size);
-        if (grid[x][y] === -5 || first === [x, y]) i--;
+        if (grid[x][y] === -5 || (first[0] === x && first[1] === y)) i--;
         else {
             grid[x][y] = -5;
             valuePlacer(x, y, grid);
@@ -79,12 +79,20 @@ function gridWebCreator(size) {
             cell.id = i+"cell"+j;
             cell.addEventListener("click", () => {clickOnCell([i, j])});
             cell.addEventListener("contextmenu", (ev) => {
-            ev.preventDefault();
-            cell.innerHTML = "F"
-            flagList.push([i, j]);
+                ev.preventDefault();
+                for (let k = 0; k < flagList.length; k++) {
+                    if (flagList[k][0] === i && flagList[k][1] === j) {
+                        cell.innerHTML = "";
+                        flagList.splice(k, 1);
+                        return;
+                    }
+                }
+                cell.innerHTML = "F";
+                flagList.push([i, j]);
+            });
             row.append(cell);
-        }
-    };
+        }    
+    }
 }
 
 function clickOnCell (cell) {
