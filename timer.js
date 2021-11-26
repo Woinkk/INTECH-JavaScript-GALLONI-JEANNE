@@ -52,7 +52,7 @@ function timerCycle() {
 
     timer.innerHTML = min + ':' + sec;
 
-    setTimeout("timerCycle()", 1000);
+    setTimeout(timerCycle, 1000);
   }
 }
 
@@ -63,4 +63,4 @@ function resetTimer() {
     sec = 0;
 }
 
-startTimer()
+export default startTimer;

@@ -1,5 +1,11 @@
+import startTimer from "./timer.js";
+
 const difficulty = document.getElementById("difficulty");
 const game = document.getElementById("game");
+let bombsPlacement = 0;
+let grids = [];
+let nmbBombs = 0;
+let gridSize = 0;
 
 window.onload = () => {
     difficulty.addEventListener("change", difficultyChooser);
@@ -35,31 +41,92 @@ function difficultyChooser() {
 
 function gridBuilder(size, bombs) {
     let grid = [];
-    for (let i = 0; i < size; i++) grid.push(0);
-    const singleGrid = grid;
-    for (let i = 0; i < size; i++) grid.push(singleGrid);
-    bombPlacer(size, grid, bombs);
+    for (let i = 0; i < size; i++) {
+        let list = [];
+        for (let j = 0; j < size; j++) {
+            list.push(0);
+        }
+        grid.push(list);
+    }
+    grids = grid;
+    nmbBombs = bombs;
+    gridSize = size;
 }
 
-function bombPlacer(size, grid, bombs) {
+function bombsPlacer(size, grid, bombs, first) {
+    console.log(grid);
     for (let i = 0; i < bombs; i++) {
         const x = Math.floor(Math.random() * size);
         const y = Math.floor(Math.random() * size);
-        grid[x][y] = 1;
+        if (grid[x][y] === -5 || first === [x, y]) i--;
+        else {
+            grid[x][y] = -5;
+            valuePlacer(x, y, grid);
+        }
     }
+    bombsPlacement = grid;
 }
 
 function gridWebCreator(size) {
     for (let i = 0; i < size; i++) {
         let row = document.createElement("div");
         row.className = "row";
-        row.id = "row"+i;
         game.append(row);
         for (let j = 0; j < size; j++) {
             let cell = document.createElement("span");
             cell.className = "td";
             cell.id = i+"cell"+j;
+            cell.addEventListener("click", () => {clickOnCell([i, j])});
             row.append(cell);
         }
     };
+}
+
+function clickOnCell (cell) {
+    const x = cell[0];
+    const y = cell[1];
+    if (bombsPlacement === 0) {
+        startTimer();
+        bombsPlacer(gridSize, grids, nmbBombs, [x, y]);
+    }
+    if (bombsPlacement[x][y] === -5) revealBombs();
+    else revealValues(cell);
+}
+
+function valuePlacer(x, y, grid) {
+    if (x+1 < gridSize && y+1 > gridSize && grid[x+1][y+1] !== -5) grid[x+1][y+1]++;
+    if (x+1 < gridSize && grid[x+1][y] !== -5) grid[x+1][y]++;
+    if (x+1 < gridSize && y - 1 >= 0 && grid[x+1][y-1] !== -5) grid[x+1][y-1]++;
+    if (x && y+1 < gridSize && grid[x][y+1] !== -5) grid[x][y+1]++;
+    if (x && y-1 >= 0 && grid[x][y-1] !== -5) grid[x][y-1]++;
+    if (x-1 >= 0 && y+1 < gridSize && grid[x-1][y+1] !== -5) grid[x-1][y+1]++;
+    if (x-1 >= 0 && y && grid[x-1][y] !== -5) grid[x-1][y]++;
+    if (x-1 >= 0 && y-1 >= 0&& grid[x-1][y-1] !== -5) grid[x-1][y-1]++;
+}
+
+function revealValues(cell) {
+    const x = cell[0];
+    const y = cell[1];
+    let list = [];
+    findAdjacent(x, y, list);
+    console.log(list);
+}
+
+function findAdjacent(x, y, list) {
+    if (bombsPlacement[x][y] === 0) {
+        findAdjacent(x + 1, y - 1, list);
+        findAdjacent(x + 1, y, list);
+        findAdjacent(x + 1, y + 1, list);
+        findAdjacent(x, y - 1, list);
+        findAdjacent(x, y + 1, list);
+        findAdjacent(x - 1, y - 1, list);
+        findAdjacent(x - 1, y, list);
+        findAdjacent(x - 1, y + 1, list);
+    }
+    if (check([x, y], list)) list.push([x, y]);
+}
+
+function check(cell, list) {
+    for (let i = 0; i < list.length; i++) if(list[i][0] === cell[0] && list[i][1] === cell[1]) return false;
+    return true;
 }
